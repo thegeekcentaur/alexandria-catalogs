@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  catalogs-service:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: local/alexandria-catalogs:1.0.001
+    ports:
+      - 9002:9000
+    environment:
+      - PORT=9000
+      - SERVICE_NAME=alexandria-catalogs
+      - MONGO_CONNECTION_URL=mongodb://mongo:27017/
+    depends_on:
+      - mongo
+  mongo:
+    container_name: mongodb
+    image: mongo:4.4.4
+    ports:
+      - 27017:27017
