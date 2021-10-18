@@ -22,6 +22,10 @@ from models.schemas.catalog import (
     CatalogSchema
 )
 
+from models.schemas.catalog_book_list import (
+    CatalogBookSchema
+)
+
 router = APIRouter()
 
 # Catalog APIs Added by ArchanaTBits
@@ -56,10 +60,11 @@ async def get_all_catalogs_of_user(user_id : str, catalog_name : str):
 
 # Updating the existing catalog books data
 @router.put(urls.update_books_to_catalog_url)
-async def update_books_to_catalog( user_id : str, catalog_name: str ,books_list: list[str]):
-    logger.info("Adding book for the catalog {}".format(catalog_name))
+async def update_books_to_catalog( user_id : str, catalog_name: str ,catalog_books: CatalogBookSchema = Body(...)):
+    logger.info("Adding books for the catalog {}".format(catalog_name))
+    logger.info("Books list: {}".format(catalog_books.books_list))
     try:
-        catalog_updated = await database.update_catalog_book_list(user_id, catalog_name, books_list)
+        catalog_updated = await database.update_catalog_book_list(user_id, catalog_name, catalog_books.books_list)
         if catalog_updated:
             return {"Books Updated Successfully to the Catalog {}".format(catalog_name)}
     except Exception as ex:
