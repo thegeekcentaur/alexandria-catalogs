@@ -102,11 +102,16 @@ async def add_book_to_catalog(user_id : str, catalog_name:str, book_isbn_id: str
 
 async def update_catalog_book_list(user_id : str, catalog_name:str, new_books_list: list) -> dict:
     curr_catalog = await catalog_collection.find_one({"name": catalog_name,"user_id": user_id})
+    logging.info("new_books_list: {}".format(new_books_list))
+    logging.info("curr_catalog: {}".format(curr_catalog))
     if curr_catalog is not None:
         logger.info("Catalog Exists")
         update_criteria = { "name": catalog_name,"user_id": user_id }
         for book_isbn_id in new_books_list:
+            logger.info("book_isbn_id: {} ".format(book_isbn_id))
             if book_isbn_id not in curr_catalog["books_list"]:
+                logger.info("Yes not in")
+                logger.info("curr_catalog.books_list: {}".format(curr_catalog["books_list"]))
                 curr_catalog["books_list"].append(book_isbn_id)
         newvalues = {"$set": { "name": curr_catalog["name"] ,
                                 "user_id" : curr_catalog["user_id"],
